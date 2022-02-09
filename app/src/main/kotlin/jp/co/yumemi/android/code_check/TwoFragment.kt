@@ -26,14 +26,14 @@ class TwoFragment : Fragment(R.layout.fragment_two) {
 
         binding = FragmentTwoBinding.bind(view)
 
-        var item = args.item
+        val item = args.item
 
-        _binding.ownerIconView.load(item.ownerIconUrl);
-        _binding.nameView.text = item.name;
-        _binding.languageView.text = item.language;
-        _binding.starsView.text = "${item.stargazersCount} stars";
-        _binding.watchersView.text = "${item.watchersCount} watchers";
-        _binding.forksView.text = "${item.forksCount} forks";
-        _binding.openIssuesView.text = "${item.openIssuesCount} open issues";
+        _binding.ownerIconView.load(item.ownerIconUrl)
+        _binding.nameView.text = item.name
+        _binding.languageView.text = item.language
+        _binding.starsView.text = getString(R.string.stars, item.stargazersCount)
+        _binding.watchersView.text = getString(R.string.watchers, item.watchersCount)
+        _binding.forksView.text = getString(R.string.forks, item.forksCount)
+        _binding.openIssuesView.text = getString(R.string.open_issues, item.openIssuesCount)
     }
 }
