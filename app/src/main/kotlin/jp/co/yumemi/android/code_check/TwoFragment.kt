@@ -12,28 +12,30 @@ import coil.load
 import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
 import jp.co.yumemi.android.code_check.databinding.FragmentTwoBinding
 
+// 検索したリポジトリのview
 class TwoFragment : Fragment(R.layout.fragment_two) {
-
     private val args: TwoFragmentArgs by navArgs()
 
     private var binding: FragmentTwoBinding? = null
-    private val _binding get() = binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         Log.d("検索した日時", lastSearchDate.toString())
 
+        val item = args.item
+
         binding = FragmentTwoBinding.bind(view)
 
-        var item = args.item
-
-        _binding.ownerIconView.load(item.ownerIconUrl);
-        _binding.nameView.text = item.name;
-        _binding.languageView.text = item.language;
-        _binding.starsView.text = "${item.stargazersCount} stars";
-        _binding.watchersView.text = "${item.watchersCount} watchers";
-        _binding.forksView.text = "${item.forksCount} forks";
-        _binding.openIssuesView.text = "${item.openIssuesCount} open issues";
+        // リポジトリのデータをviewに渡す
+        binding!!.apply {
+            ownerIconView.load(item.ownerIconUrl)
+            nameView.text = item.name
+            languageView.text = item.language
+            starsView.text = getString(R.string.stars, item.stargazersCount)
+            watchersView.text = getString(R.string.watchers, item.watchersCount)
+            forksView.text = getString(R.string.forks, item.forksCount)
+            openIssuesView.text = getString(R.string.open_issues, item.openIssuesCount)
+        }
     }
 }

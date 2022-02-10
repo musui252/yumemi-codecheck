@@ -19,14 +19,10 @@ import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 import java.util.*
 
-/**
- * TwoFragment で使う
- */
-class OneViewModel(
-    val context: Context
-) : ViewModel() {
+// OneFragmentにリポジトリのデータを渡すview model
+class OneViewModel(val context: Context) : ViewModel() {
 
-    // 検索結果
+    // githubのapiからデータを受け取って、入力に対する検索結果のリストを返す
     fun searchResults(inputText: String): List<Item> = runBlocking {
         val client = HttpClient(Android)
 
@@ -37,35 +33,28 @@ class OneViewModel(
             }
 
             val jsonBody = JSONObject(response.receive<String>())
-
             val jsonItems = jsonBody.optJSONArray("items")!!
-
             val items = mutableListOf<Item>()
 
-            /**
-             * アイテムの個数分ループする
-             */
+            // 検索結果をアイテムに格納
             for (i in 0 until jsonItems.length()) {
-                val jsonItem = jsonItems.optJSONObject(i)!!
-                val name = jsonItem.optString("full_name")
-                val ownerIconUrl = jsonItem.optJSONObject("owner")!!.optString("avatar_url")
-                val language = jsonItem.optString("language")
-                val stargazersCount = jsonItem.optLong("stargazers_count")
-                val watchersCount = jsonItem.optLong("watchers_count")
-                val forksCount = jsonItem.optLong("forks_count")
-                val openIssuesCount = jsonItem.optLong("open_issues_count")
-
-                items.add(
-                    Item(
-                        name = name,
-                        ownerIconUrl = ownerIconUrl,
-                        language = context.getString(R.string.written_language, language),
-                        stargazersCount = stargazersCount,
-                        watchersCount = watchersCount,
-                        forksCount = forksCount,
-                        openIssuesCount = openIssuesCount
+                jsonItems.optJSONObject(i)!!.let {
+                    val item = Item(
+                        name = it.optString("full_name"),
+                        ownerIconUrl = it.optJSONObject("owner")!!.optString("avatar_url"),
+                        language = context.getString(
+                            R.string.written_language,
+                            it.optString("language")
+                        ),
+                        stargazersCount = it.optLong("stargazers_count"),
+                        watchersCount = it.optLong("watchers_count"),
+                        forksCount = it.optLong("forks_count"),
+                        openIssuesCount = it.optLong("open_issues_count")
                     )
-                )
+
+                    items.add(item)
+                }
+
             }
 
             lastSearchDate = Date()
@@ -75,6 +64,7 @@ class OneViewModel(
     }
 }
 
+// 検索結果のデータ
 @Parcelize
 data class Item(
     val name: String,
