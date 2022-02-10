@@ -12,6 +12,7 @@ import coil.load
 import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
 import jp.co.yumemi.android.code_check.databinding.FragmentTwoBinding
 
+// 検索したリポジトリのview
 class TwoFragment : Fragment(R.layout.fragment_two) {
     private val args: TwoFragmentArgs by navArgs()
 
@@ -26,6 +27,7 @@ class TwoFragment : Fragment(R.layout.fragment_two) {
 
         binding = FragmentTwoBinding.bind(view)
 
+        // リポジトリのデータをviewに渡す
         binding!!.apply {
             ownerIconView.load(item.ownerIconUrl)
             nameView.text = item.name

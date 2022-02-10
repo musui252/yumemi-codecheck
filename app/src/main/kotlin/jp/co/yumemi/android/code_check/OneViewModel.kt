@@ -19,12 +19,10 @@ import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 import java.util.*
 
-/**
- * TwoFragment で使う
- */
+// OneFragmentにリポジトリのデータを渡すview model
 class OneViewModel(val context: Context) : ViewModel() {
 
-    // 検索結果
+    // githubのapiからデータを受け取って、入力に対する検索結果のリストを返す
     fun searchResults(inputText: String): List<Item> = runBlocking {
         val client = HttpClient(Android)
 
@@ -38,12 +36,9 @@ class OneViewModel(val context: Context) : ViewModel() {
             val jsonItems = jsonBody.optJSONArray("items")!!
             val items = mutableListOf<Item>()
 
-            /**
-             * アイテムの個数分ループする
-             */
+            // 検索結果をアイテムに格納
             for (i in 0 until jsonItems.length()) {
                 jsonItems.optJSONObject(i)!!.let {
-
                     val item = Item(
                         name = it.optString("full_name"),
                         ownerIconUrl = it.optJSONObject("owner")!!.optString("avatar_url"),
@@ -69,6 +64,7 @@ class OneViewModel(val context: Context) : ViewModel() {
     }
 }
 
+// 検索結果のデータ
 @Parcelize
 data class Item(
     val name: String,

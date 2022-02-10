@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.*
 import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
 
+// 検索画面のview
 class OneFragment : Fragment(R.layout.fragment_one) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -30,6 +31,7 @@ class OneFragment : Fragment(R.layout.fragment_one) {
             }
         })
 
+        // 検索ボックスのactionに対する処理を設定
         binding.searchInputText
             .setOnEditorActionListener { editText, action, _ ->
                 if (action != EditorInfo.IME_ACTION_SEARCH) {
@@ -44,6 +46,7 @@ class OneFragment : Fragment(R.layout.fragment_one) {
                 return@setOnEditorActionListener true
             }
 
+        // サジェストを表示するためのviewのパラメーターを設定
         binding.recyclerView.apply {
             layoutManager = linearLayoutManager
             addItemDecoration(dividerItemDecoration)
@@ -51,6 +54,7 @@ class OneFragment : Fragment(R.layout.fragment_one) {
         }
     }
 
+    // 検索したリポジトリの詳細のviewへ遷移
     fun gotoRepositoryFragment(item: Item) {
         val action = OneFragmentDirections
             .actionRepositoriesFragmentToRepositoryFragment(item = item)
@@ -58,6 +62,7 @@ class OneFragment : Fragment(R.layout.fragment_one) {
     }
 }
 
+// リストの差分を検知する比較関数のオブジェクト
 val diff_util = object : DiffUtil.ItemCallback<Item>() {
     override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
         return oldItem.name == newItem.name
@@ -69,6 +74,7 @@ val diff_util = object : DiffUtil.ItemCallback<Item>() {
 
 }
 
+// リポジトリ検索のサジェストの生成と更新
 class CustomAdapter(
     private val itemClickListener: OnItemClickListener
 ) : ListAdapter<Item, CustomAdapter.ViewHolder>(diff_util) {
