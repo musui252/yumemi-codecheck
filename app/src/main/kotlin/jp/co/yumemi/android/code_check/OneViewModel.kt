@@ -12,9 +12,7 @@ import io.ktor.client.engine.android.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 import java.util.*
@@ -26,21 +24,22 @@ class OneViewModel(val context: Context) : ViewModel() {
     fun searchResults(inputText: String): List<Item> = runBlocking {
         val client = HttpClient(Android)
 
-        return@runBlocking GlobalScope.async {
-            val response: HttpResponse = client?.get("https://api.github.com/search/repositories") {
+        return@runBlocking async {
+            val response: HttpResponse = client.get("https://api.github.com/search/repositories") {
                 header("Accept", "application/vnd.github.v3+json")
                 parameter("q", inputText)
             }
 
             val jsonBody = JSONObject(response.receive<String>())
-            val jsonItems = jsonBody.optJSONArray("items")!!
             val items = mutableListOf<Item>()
+            val jsonItems = jsonBody.optJSONArray("items") ?: return@async items.toList()
 
             // 検索結果をアイテムに格納
             for (i in 0 until jsonItems.length()) {
-                jsonItems.optJSONObject(i)!!.let {
+                jsonItems.optJSONObject(i)?.let {
                     val item = Item(
                         name = it.optString("full_name"),
+                        // TODO: ownerIconのURLがnullだったら、デフォルトのownerIconURLを返すようにする
                         ownerIconUrl = it.optJSONObject("owner")!!.optString("avatar_url"),
                         language = context.getString(
                             R.string.written_language,
