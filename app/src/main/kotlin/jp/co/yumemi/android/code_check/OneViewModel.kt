@@ -14,6 +14,7 @@ import io.ktor.client.statement.*
 import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
 import kotlinx.coroutines.*
 import kotlinx.parcelize.Parcelize
+import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
@@ -30,8 +31,15 @@ class OneViewModel(val context: Context) : ViewModel() {
                 parameter("q", inputText)
             }
 
-            val jsonBody = JSONObject(response.receive<String>())
             val items = mutableListOf<Item>()
+
+            val jsonBody = runCatching {
+                JSONObject(response.receive<String>())
+            }.fold(
+                onSuccess = { it },
+                onFailure = { JSONObject() }
+            )
+
             val jsonItems = jsonBody.optJSONArray("items") ?: return@async items.toList()
 
             // 検索結果をアイテムに格納
