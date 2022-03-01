@@ -3,9 +3,9 @@
  */
 package jp.co.yumemi.android.code_check
 
-import android.content.Context
+import android.app.Application
 import android.os.Parcelable
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
@@ -15,19 +15,18 @@ import io.ktor.client.statement.*
 import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
 import kotlinx.coroutines.*
 import kotlinx.parcelize.Parcelize
-import org.json.JSONException
 import org.json.JSONObject
 import java.util.*
 
 // OneFragmentにリポジトリのデータを渡すview model
-// TODO: contextを引数にとらない実装(メモリリークの改善)
-class OneViewModel(val context: Context) : ViewModel() {
+class OneViewModel(application: Application) : AndroidViewModel(application) {
 
     // githubのapiからデータを受け取って、入力に対する検索結果のリストを返す
     fun searchResults(_inputText: String?): List<Item> = runBlocking {
         val client = HttpClient(Android)
         val inputText = _inputText ?: ""
         val items = mutableListOf<Item>()
+        val context = getApplication<Application>().applicationContext
 
         return@runBlocking async {
             // クラッシュの原因かもしれない箇所
