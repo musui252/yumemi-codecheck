@@ -28,7 +28,7 @@ class TwoFragment : Fragment(R.layout.fragment_two) {
         binding = FragmentTwoBinding.bind(view)
 
         // リポジトリのデータをviewに渡す
-        binding!!.apply {
+        binding?.apply {
             ownerIconView.load(item.ownerIconUrl)
             nameView.text = item.name
             languageView.text = item.language
