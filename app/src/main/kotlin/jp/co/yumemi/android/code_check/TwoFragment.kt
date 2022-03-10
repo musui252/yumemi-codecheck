@@ -16,19 +16,16 @@ import jp.co.yumemi.android.code_check.databinding.FragmentTwoBinding
 class TwoFragment : Fragment(R.layout.fragment_two) {
     private val args: TwoFragmentArgs by navArgs()
 
-    private var binding: FragmentTwoBinding? = null
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         Log.d("検索した日時", lastSearchDate.toString())
 
         val item = args.item
-
-        binding = FragmentTwoBinding.bind(view)
+        val binding = FragmentTwoBinding.bind(view)
 
         // リポジトリのデータをviewに渡す
-        binding?.apply {
+        binding.apply {
             ownerIconView.load(item.ownerIconUrl)
             nameView.text = item.name
             languageView.text = item.language
